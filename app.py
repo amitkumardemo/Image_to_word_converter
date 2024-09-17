@@ -19,7 +19,7 @@ st.markdown("""
 <div class="navbar">
   <a href="#Home">Home</a>
   <a href="#About">About</a>
-  <a href="#About">BackToWebsite</a>
+  <a href="#BackToWebsite">Back To Website</a>
 </div>
 """, unsafe_allow_html=True)
 
@@ -47,16 +47,16 @@ if choice == "Home":
         try:
             text = pytesseract.image_to_string(image)
 
-            # Sanitize the extracted text
-            sanitized_text = text.encode('ascii', 'ignore').decode('ascii')
-
             # Display the extracted text in a text area
-            st.text_area("Extracted Text", sanitized_text, height=300)
+            st.text_area("Extracted Text", text, height=300)
+
+            # Clean text to avoid encoding issues
+            text = text.encode('utf-8', errors='ignore').decode('utf-8')
 
             # Create a Word document
             doc = Document()
             doc.add_heading('Extracted Text', level=1)
-            doc.add_paragraph(sanitized_text)
+            doc.add_paragraph(text)
             
             # Save the document to a BytesIO stream
             buffer = io.BytesIO()
