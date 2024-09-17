@@ -3,6 +3,7 @@ from PIL import Image
 import pytesseract
 from docx import Document
 import io
+import re
 
 # Set the Tesseract executable path (if necessary for Windows)
 # Uncomment and set the path if running on Windows
@@ -47,17 +48,17 @@ if choice == "Home":
         try:
             text = pytesseract.image_to_string(image)
 
+            # Sanitize text to avoid problematic characters
+            text = re.sub(r'[^\x00-\x7F]+', '', text)  # Remove non-ASCII characters
+
             # Display the extracted text in a text area
             st.text_area("Extracted Text", text, height=300)
-
-            # Clean text to avoid encoding issues
-            text = text.encode('utf-8', errors='ignore').decode('utf-8')
 
             # Create a Word document
             doc = Document()
             doc.add_heading('Extracted Text', level=1)
             doc.add_paragraph(text)
-            
+
             # Save the document to a BytesIO stream
             buffer = io.BytesIO()
             doc.save(buffer)
@@ -71,8 +72,8 @@ if choice == "Home":
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
 
-        except pytesseract.TesseractNotFoundError:
-            st.error("Tesseract OCR not found. Please ensure Tesseract is installed and the path is set correctly.")
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
 
 elif choice == "About":
     # About Page
