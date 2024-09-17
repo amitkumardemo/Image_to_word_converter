@@ -11,48 +11,6 @@ import io
 # Set page configuration
 st.set_page_config(page_title="Image to Word Converter", layout="wide")
 
-# Add CSS for custom styles
-st.markdown("""
-<style>
-/* Navbar styles */
-.navbar {
-    background-color: #333;
-    overflow: hidden;
-}
-.navbar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-.navbar a:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-/* Footer styles */
-.footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-.footer a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-}
-.footer a:hover {
-    text-decoration: underline;
-}
-</style>
-""", unsafe_allow_html=True)
-
 # Logo
 st.image("jb.png", width=250)  # Replace with your logo URL
 
@@ -61,7 +19,7 @@ st.markdown("""
 <div class="navbar">
   <a href="#Home">Home</a>
   <a href="#About">About</a>
-  <a href="https://techiehelpt.netlify.app/">BackToWebsite</a> <!-- Replace with your actual website URL -->
+  <a href="#About">BackToWebsite</a>
 </div>
 """, unsafe_allow_html=True)
 
@@ -89,13 +47,16 @@ if choice == "Home":
         try:
             text = pytesseract.image_to_string(image)
 
+            # Sanitize the extracted text
+            sanitized_text = text.encode('ascii', 'ignore').decode('ascii')
+
             # Display the extracted text in a text area
-            st.text_area("Extracted Text", text, height=300)
+            st.text_area("Extracted Text", sanitized_text, height=300)
 
             # Create a Word document
             doc = Document()
             doc.add_heading('Extracted Text', level=1)
-            doc.add_paragraph(text)
+            doc.add_paragraph(sanitized_text)
             
             # Save the document to a BytesIO stream
             buffer = io.BytesIO()
@@ -136,8 +97,8 @@ elif choice == "About":
 st.markdown("""
 <div class="footer">
     <p>© 2024 Image to Word Converter | TechieHelp</p>
-    <a href="https://www.linkedin.com/in/techiehelp" target="_blank">LinkedIn</a>
-    <a href="https://www.twitter.com/techiehelp" target="_blank">Twitter</a>
-    <a href="https://www.instagram.com/techiehelp2" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/techiehelp" style="color:white; margin-right: 10px;">LinkedIn</a>
+    <a href="https://www.twitter.com/techiehelp" style="color:white; margin-right: 10px;">Twitter</a>
+    <a href="https://www.instagram.com/techiehelp2" style="color:white;">Instagram</a>
 </div>
 """, unsafe_allow_html=True)
