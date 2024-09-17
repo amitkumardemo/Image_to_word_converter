@@ -50,6 +50,8 @@ if choice == "Home":
 
             # Sanitize text to avoid problematic characters
             text = re.sub(r'[^\x00-\x7F]+', '', text)  # Remove non-ASCII characters
+            text = text.replace('\x00', '')  # Remove null bytes
+            text = ''.join(ch for ch in text if ch.isprintable())  # Remove non-printable characters
 
             # Display the extracted text in a text area
             st.text_area("Extracted Text", text, height=300)
